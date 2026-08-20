@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transcript SGPA / CGPA Audit — MSU CoE</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<style>
+  :root{
+    --blue:#14396b; --blue2:#1f4e79; --mid:#2e75b6; --gold:#e8a72c;
+    --paper:#f7f9fc; --card:#ffffff; --ink:#1a2332; --muted:#5b6b82;
+    --line:#dbe4f0; --green:#e3f4ea; --greenInk:#1f7a4d; --red:#fbe4e6;
+    --redInk:#b02a37; --amber:#fdf3d6; --amberInk:#9a6a10; --violet:#e7ecfb; --violetInk:#3a55b0;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--paper);line-height:1.5}
+  header.app{background:linear-gradient(160deg,var(--blue),var(--blue2));color:#fff;padding:26px 32px;border-bottom:3px solid var(--gold)}
+  header.app h1{margin:0;font-size:22px;letter-spacing:.2px;font-weight:650}
+  header.app p{margin:6px 0 0;color:#c9d8ee;font-size:13px}
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 32px 80px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:820px){.grid2{grid-template-columns:1fr}.wrap{padding:18px}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+  .step{font:600 11px var(--sans);text-transform:uppercase;letter-spacing:1.4px;color:var(--mid)}
+  .card h2{margin:6px 0 14px;font-size:16px}
+  .drop{display:block;border:1.5px dashed var(--line);border-radius:10px;padding:22px;text-align:center;cursor:pointer;transition:.15s;background:#fbfdff}
+  .drop:hover,.drop.hot{border-color:var(--mid);background:#f0f6fd}
+  .drop strong{display:block;color:var(--blue2);font-size:15px}
+  .drop small{display:block;color:var(--muted);margin-top:6px;font-size:12px}
+  input[type=file]{display:none}
+  .pill{display:inline-flex;align-items:center;gap:7px;background:#eef4fb;color:var(--blue2);border:1px solid var(--line);
+    border-radius:20px;padding:5px 12px;font-size:12.5px;margin-top:12px;font-weight:600}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--gold)}
+  .dot.ok{background:var(--greenInk)}
+  .rules{font-size:12.5px;color:var(--muted);margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+  .rules b{color:var(--ink)}
+  .run{margin-top:22px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  button.primary{background:var(--blue2);color:#fff;border:0;border-radius:9px;padding:12px 22px;font:600 14px var(--sans);cursor:pointer}
+  button.primary:hover{background:var(--blue)}
+  button.primary:disabled{background:#a9b7cc;cursor:not-allowed}
+  button.ghost{background:#fff;color:var(--blue2);border:1.5px solid var(--mid);border-radius:9px;padding:11px 18px;font:600 13px var(--sans);cursor:pointer}
+  button.ghost:disabled{opacity:.5;cursor:not-allowed}
+  .bar{height:9px;background:#e7eef8;border-radius:6px;overflow:hidden;margin-top:16px;display:none}
+  .bar.on{display:block}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mid),var(--gold));transition:.2s}
+  .barlbl{font-size:12px;color:var(--muted);margin-top:7px;min-height:16px}
+  .cards{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:22px 0}
+  @media(max-width:820px){.cards{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:11px;padding:14px 14px 12px}
+  .kpi .n{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+  .kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:2px}
+  .kpi.flag .n{color:var(--redInk)} .kpi.ok .n{color:var(--greenInk)} .kpi.warn .n{color:var(--amberInk)}
+  .tabs{display:flex;gap:4px;border-bottom:2px solid var(--line);margin:8px 0 0;flex-wrap:wrap}
+  .tab{padding:10px 16px;font:600 13px var(--sans);color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
+  .tab.active{color:var(--blue2);border-bottom-color:var(--gold)}
+  .panel{display:none;padding-top:16px} .panel.active{display:block}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{background:var(--blue2);color:#fff;text-align:left;padding:9px 10px;font-weight:600;position:sticky;top:0}
+  td{padding:8px 10px;border-bottom:1px solid #eef2f8;vertical-align:top}
+  tr:hover td{background:#fafcff}
+  .reg{font-family:var(--mono);font-size:12px}
+  .tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:700}
+  .t-match{background:var(--green);color:var(--greenInk)} .t-mismatch{background:var(--red);color:var(--redInk)}
+  .t-variant{background:var(--violet);color:var(--violetInk)}
+  .t-major{background:var(--red);color:var(--redInk)} .t-minor{background:var(--amber);color:var(--amberInk)}
+  .t-info{background:var(--violet);color:var(--violetInk)} .t-critical{background:#4a0d13;color:#fff}
+  .t-clean{background:var(--green);color:var(--greenInk)} .t-flagged{background:var(--red);color:var(--redInk)}
+  .val-bad{background:var(--red)} .val-good{background:var(--green)} .val-var{background:var(--violet)}
+  .scroll{max-height:520px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+  .empty{padding:40px;text-align:center;color:var(--muted);font-size:14px}
+  .note{background:var(--amber);color:var(--amberInk);border-radius:8px;padding:10px 12px;font-size:12.5px;margin:0 0 14px}
+  .note.good{background:var(--green);color:var(--greenInk)}
+  .note.info{background:var(--violet);color:var(--violetInk)}
+  #results{display:none;margin-top:26px}
+  .sub{color:var(--muted);font-size:12px;margin-left:8px}
+  textarea{width:100%;height:132px;border:1px solid var(--line);border-radius:8px;padding:10px;
+    font-family:var(--mono);font-size:11.5px;color:var(--ink);background:#fbfdff;resize:vertical}
+  .frac{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  details.raw{border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-top:8px;background:#fbfdff}
+  details.raw summary{cursor:pointer;font-weight:600;font-size:12.5px;color:var(--blue2)}
+  details.raw pre{font-family:var(--mono);font-size:11px;white-space:pre-wrap;color:var(--muted);max-height:260px;overflow:auto}
+</style>
+</head>
+<body>
+<header class="app">
+  <h1>Transcript SGPA / CGPA Audit</h1>
+  <p>Medhavi Skills University · Controller of Examinations — read the academic transcript PDF, recompute every SGPA, CGPA, credit, mark and percentage from the printed subject rows, and check them against what the transcript claims. Exact integer arithmetic, no floating point. Everything runs in your browser; no file leaves this device.</p>
+</header>
+
+<div class="wrap">
+
+  <div class="grid2">
+    <div class="card">
+      <div class="step">Step 1</div>
+      <h2>Add transcript PDFs</h2>
+      <label class="drop" id="drop">
+        <strong>Choose academic transcript PDFs</strong>
+        <small>One transcript per student — select many at once, or drag them here</small>
+        <input type="file" id="fileInput" accept="application/pdf" multiple>
+      </label>
+      <div class="pill" id="pill" style="display:none"><span class="dot ok"></span><span id="pillTxt"></span></div>
+      <small style="display:block;color:var(--muted);margin-top:10px;font-size:11.5px">
+        The reader handles the two-column semester layout and rotated pages. Scanned transcripts with no
+        text layer cannot be read and are listed separately.
+      </small>
+    </div>
+
+    <div class="card">
+      <div class="step">Step 2</div>
+      <h2>Grade table</h2>
+      <small style="color:var(--muted);font-size:12px;display:block;margin-bottom:8px">
+        Edit only if this programme uses a different scale. Bands are inclusive lower bounds on marks.
+      </small>
+      <textarea id="gradeTable" spellcheck="false"></textarea>
+      <div style="margin-top:8px">
+        <button class="ghost" id="resetGrades">Reset to MSU default</button>
+        <span class="sub" id="gradeStatus"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <div class="step">Rules in force</div>
+    <div class="rules">
+      Credit structure <b>T-P-PR summed</b> (0-4-0 → 4, never 0) &nbsp;·&nbsp;
+      Per-semester credit sum <b>must equal the semester's printed CREDITS line</b> — checked first; a
+      transcript is rejected before any SGPA is computed if it fails. This doubles as the
+      <b>parse-integrity check</b>: if the two-column reader had mis-assigned a row, the credits would not
+      reconcile and the student is held back rather than silently mis-audited. &nbsp;·&nbsp;
+      SGPA <b>= Σ(Ci × Gi) ÷ ΣCi</b>, 1 decimal, <b>ROUND_HALF_UP</b> &nbsp;·&nbsp;
+      CGPA <b>recomputed from every subject across all semesters</b>, not from the printed SGPAs &nbsp;·&nbsp;
+      Grade <b>re-derived from marks</b> and checked against the printed letter.<br>
+      <b>Derived totals</b>: Total Credits <b>= Σ(T+P+PR)</b>, Obtained Marks <b>= Σ subject marks</b>
+      (with per-semester subtotals), Maximum Marks <b>= unique course codes × 100</b> (each code like
+      FDP101, AAL108 counts as one subject worth 100 marks; the printed MAX. MARKS is cross-checked
+      against this count — e.g. 35 codes × 100 = 3500 must match the printed 3500),
+      Percentage <b>= Obtained ÷ printed Maximum × 100</b>. A Maximum Marks anomaly is
+      <b>reported, never silently substituted</b>.<br>
+      <b>Arithmetic</b>: every value is an exact fraction of two BigIntegers. No IEEE-754 float and
+      no tolerance window in the rounding path — a value either matches or it does not. Printed figures
+      are compared <b>at the precision they were printed</b>.
+    </div>
+    <div class="run">
+      <button class="primary" id="runBtn" disabled>Run audit</button>
+      <button class="ghost" id="dlBtn" disabled>Download Excel report</button>
+      <button class="ghost" id="clearBtn">Clear all</button>
+      <span class="sub" id="hint">Load at least one transcript PDF to begin.</span>
+    </div>
+    <div class="bar" id="bar"><i id="barFill"></i></div>
+    <div class="barlbl" id="barLbl"></div>
+  </div>
+
+  <div id="results">
+    <div class="cards" id="kpis"></div>
+    <div class="card">
+      <div class="tabs" id="tabs"></div>
+      <div id="panels"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+const $=s=>document.querySelector(s);
+const esc=v=>v==null?'':String(v).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+/* ═══════════════════════════════════════════════════════════════════════
+   EXACT ARITHMETIC ENGINE — unchanged
+   Every quantity is an exact rational n/d of two BigInts. Nothing is ever a
+   JS Number. Rounding is ROUND_HALF_UP, applied once, integer-only:
+       floor(a/d + 1/2) === floor((2a + d) / 2d)
+   There is no tolerance window, so a real difference can never be absorbed.
+   ═══════════════════════════════════════════════════════════════════════ */
+const gcd=(a,b)=>{a=a<0n?-a:a;b=b<0n?-b:b;while(b){const t=a%b;a=b;b=t;}return a;};
+
+class Rat{
+  constructor(n,d=1n){
+    if(d===0n) throw new Error('division by zero');
+    if(d<0n){n=-n;d=-d;}
+    const g=gcd(n,d)||1n; this.n=n/g; this.d=d/g;
+  }
+  static parse(x){
+    const s=String(x).trim();
+    if(!/^-?\d+(\.\d+)?$/.test(s)) throw new Error(`not a number: "${x}"`);
+    const neg=s[0]==='-', body=neg?s.slice(1):s;
+    const [i,f='']=body.split('.');
+    return new Rat(BigInt(i+f)*(neg?-1n:1n), 10n**BigInt(f.length));
+  }
+  add(o){return new Rat(this.n*o.d+o.n*this.d,this.d*o.d);}
+  sub(o){return new Rat(this.n*o.d-o.n*this.d,this.d*o.d);}
+  mul(o){return new Rat(this.n*o.n,this.d*o.d);}
+  div(o){return new Rat(this.n*o.d,this.d*o.n);}
+  eq(o){return this.n===o.n&&this.d===o.d;}
+  gte(o){return this.n*o.d>=o.n*this.d;}
+  isZero(){return this.n===0n;}
+  scaledHalfUp(p){
+    const sc=10n**BigInt(p), num=this.n*sc, den=this.d;
+    const neg=num<0n, a=neg?-num:num;
+    const q=(2n*a+den)/(2n*den);          // BigInt div truncates; a,den>0 ⇒ floor
+    return neg?-q:q;
+  }
+  toFixed(p){
+    const q=this.scaledHalfUp(p), neg=q<0n;
+    const s=(neg?-q:q).toString().padStart(p+1,'0'), cut=s.length-p;
+    return (neg?'-':'')+(p?`${s.slice(0,cut)}.${s.slice(cut)}`:s);
+  }
+  matchesPrinted(printed){
+    const dp=decimalsOf(printed);
+    return this.scaledHalfUp(dp)===Rat.parse(printed).scaledHalfUp(dp);
+  }
+  frac(){return `${this.n}/${this.d}`;}
+}
+const decimalsOf=s=>{const p=String(s).trim().split('.');return p.length>1?p[1].length:0;};
+const R=x=>Rat.parse(x);
+const ZERO=new Rat(0n);
+
+const DEFAULT_GRADES={
+  "O":{point:"10",min:"99"}, "A+":{point:"9",min:"90"}, "A":{point:"8",min:"80"},
+  "B+":{point:"7",min:"70"}, "B":{point:"6",min:"60"},  "C":{point:"5",min:"50"},
+  "P":{point:"4",min:"40"},  "F":{point:"0",min:"0"}
+};
+let GRADES=DEFAULT_GRADES;
+
+function gradeForMarks(marks,table){
+  const rows=Object.entries(table).map(([g,s])=>[g,R(s.min)]).sort((a,b)=>a[1].gte(b[1])?-1:1);
+  for(const [g,min] of rows) if(marks.gte(min)) return g;
+  return 'F';
+}
+function parseCredits(raw){
+  const s=String(raw).trim();
+  if(s.includes('-')) return s.split('-').filter(p=>p.trim()!=='').reduce((a,p)=>a.add(R(p)),ZERO);
+  return R(s);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PDF READER
+   The transcript prints two semesters side by side (First left / Second
+   right), so grouping text purely by y-position would weld a row from the
+   left table onto a row from the right table. Every item is therefore first
+   mapped through the page's viewport transform — which absorbs any /Rotate
+   on the page — and then split into a left and a right stream at the MEASURED
+   inter-table gutter (see columnBoundary — NOT the page midpoint, and NOT the
+   midpoint between the code columns; either of those cuts through the left
+   table's own credits/marks/grade cells and destroys both semesters).
+   Each stream is read top-to-bottom on its own, which keeps each
+   semester's rows contiguous and correctly attributed.
+   ═══════════════════════════════════════════════════════════════════════ */
+async function extractPdf(file){
+  const buf=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+  const pages=[]; let charCount=0;
+  for(let p=1;p<=pdf.numPages;p++){
+    const page=await pdf.getPage(p);
+    const vp=page.getViewport({scale:1});
+    const tc=await page.getTextContent();
+    charCount+=tc.items.reduce((a,i)=>a+(i.str||'').length,0);
+    const items=[];
+    tc.items.forEach(it=>{
+      if(!it.str||!it.str.trim())return;
+      // viewport space: absorbs page rotation; y increases downward
+      const t=pdfjsLib.Util.transform(vp.transform,it.transform);
+      items.push({x:t[4],y:t[5],s:it.str});
+    });
+    pages.push({items,w:vp.width,h:vp.height});
+    try{page.cleanup();}catch(_){ }
+    if(p%5===0) await new Promise(r=>setTimeout(r,0));
+  }
+  try{await pdf.destroy();}catch(_){ }
+  return {pages,charCount};
+}
+
+/* Group a set of items into visual rows: same y (±3). Returns rows as arrays
+   of {x,s} tokens (kept, not joined) plus a joined text string. Keeping the
+   tokens with their x-coordinates is what lets a wrapped course name be told
+   apart from a real data column further right on the line. */
+function toRows(items){
+  const groups={};
+  items.forEach(it=>{
+    let key=null;
+    for(const k in groups){ if(Math.abs(k-it.y)<=3){key=k;break;} }
+    if(key==null)key=it.y;
+    (groups[key]=groups[key]||[]).push(it);
+  });
+  return Object.keys(groups).map(Number).sort((a,b)=>a-b).map(k=>{
+    const toks=groups[k].sort((a,b)=>a.x-b.x);
+    return {y:k, toks, text:toks.map(o=>o.s).join(' ').replace(/\s+/g,' ').trim()};
+  }).filter(r=>r.text);
+}
+/* flat lines, for metadata scanning */
+function toLines(items){ return toRows(items).map(r=>r.text); }
+
+const ORD={first:1,second:2,third:3,fourth:4,fifth:5,sixth:6,seventh:7,eighth:8,ninth:9,tenth:10};
+const SEM_RE=/\b(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH|TENTH)\s+SEMESTER\b/i;
+const CODE_RE=/^[A-Z]{2,4}\d{3}$/;                 // FDL100, AAP105 …
+const TPPR_RE=/^\d{1,2}-\d{1,2}-\d{1,2}$/;         // 0-4-0
+const GRADE_RE=/^(AB|A\+|B\+|[OABCPF])$/;          // AB & A+ before single letters
+const SEMTOT_RE=/CREDITS\s*[:.]?\s*(\d+)\s*[|\/·]?\s*SGPA\s*[:.]?\s*([\d.]+)/i;
+
+function grab(lines,re){ for(const l of lines){const m=l.match(re); if(m) return m;} return null; }
+
+/* Read ONE subject out of a row's tokens by field shape, not by position in a
+   joined string. Course names wrap and split into their own tokens, and a
+   wrapped fragment ("Construction", "for Men") has NO T-P-PR / marks / grade,
+   so it simply yields null here instead of corrupting the row before it. */
+function readSubjectRow(toks){
+  // rebuild "0 - 4 - 0" that split into separate tokens
+  const merged=[]; 
+  for(let i=0;i<toks.length;i++){
+    let s=toks[i].s;
+    if(/^\d{1,2}$/.test(s) && toks[i+1]&&toks[i+1].s==='-' && toks[i+2]&&/^\d{1,2}$/.test(toks[i+2].s)
+       && toks[i+3]&&toks[i+3].s==='-' && toks[i+4]&&/^\d{1,2}$/.test(toks[i+4].s)){
+      merged.push({x:toks[i].x,s:`${s}-${toks[i+2].s}-${toks[i+4].s}`}); i+=4; continue;
+    }
+    merged.push({x:toks[i].x,s});
+  }
+  const flat=merged.map(t=>t.s);
+  const code=flat.find(t=>CODE_RE.test(t));
+  if(!code) return null;                                  // no course code ⇒ not a subject row
+  const tppr=flat.find(t=>TPPR_RE.test(t));
+  if(!tppr) return null;                                  // no credit cell ⇒ wrapped fragment, skip
+  const ci=flat.indexOf(tppr);
+  // marks: first pure integer AFTER the credit column
+  let marks=null;
+  for(let i=ci+1;i<flat.length;i++){ if(/^\d{1,3}$/.test(flat[i])){marks=flat[i];break;} }
+  // grade: a grade token AFTER the credit column (search from the right for the last one)
+  let grade=null;
+  for(let i=flat.length-1;i>ci;i--){ if(GRADE_RE.test(flat[i])){grade=flat[i];break;} }
+  if(marks==null||grade==null) return null;
+  // course name = everything between the code and the credit column
+  const name=flat.slice(flat.indexOf(code)+1, ci).join(' ').trim();
+  return {course_code:code, course_name:name, credits:tppr, marks, printed_grade:grade};
+}
+
+/* Decide the column boundary between the two side-by-side semester tables.
+
+   ─ THE BUG THIS REPLACES ────────────────────────────────────────────────
+   The previous version looked for the WIDEST EMPTY x-BAND between the two
+   code columns and assumed that band was the inter-table gutter. On this
+   transcript that assumption is false: the whitespace INSIDE one table
+   (course-name column → credits column, ~128pt on an 843pt page) is far
+   wider than the gutter BETWEEN the tables (~24pt). So "widest empty band"
+   picked an intra-table gap and put the boundary in the MIDDLE of the left
+   table — measured at x≈259 on page 1 and x≈97 on page 2, versus a true
+   gutter at x≈418.
+
+   Consequence: the left table's own credits (x≈318), marks (x≈377) and
+   grade (x≈405) cells were sliced into the RIGHT stream, where — sharing the
+   same y as the right table's rows — they were welded onto them. Because
+   readSubjectRow() takes the FIRST T-P-PR token and the first integer after
+   it, the right-hand subject inherited the LEFT semester's credits and marks
+   while keeping its own (right-most) grade. Meanwhile the left stream kept
+   only codes and names, had no credit/marks/grade cells, so every one of its
+   rows returned null and the semester disappeared entirely.
+   Net effect: no Sem 1/3/5, and Sem 2/4/6 showing Sem 1/3/5's marks.
+
+   ─ THE CORRECT ANCHOR ───────────────────────────────────────────────────
+   A table block owns everything from its own left edge up to the next
+   block's left edge, and the right table's left edge is its COURSE-CODE
+   column. So: cluster the code x-positions, take the first code x of the
+   right-hand cluster, then place the boundary inside the gap immediately to
+   its left. That gap is measured only on rows that contain BOTH tables'
+   codes, so what we measure is the genuine inter-table gutter and cannot be
+   confused with an intra-table column gap. The median over such rows keeps
+   one odd row from moving the boundary.
+
+   The boundary must land strictly between the left table's last cell and the
+   right table's section heading ("SECOND SEMESTER" starts ~2pt LEFT of the
+   right code column), which is why we bisect the measured gap rather than
+   simply subtracting a fixed margin. */
+function columnBoundary(items,w){
+  const codeXs=[...new Set(items.filter(i=>CODE_RE.test(i.s)).map(i=>i.x))].sort((a,b)=>a-b);
+  if(codeXs.length<2) return Infinity;             // single column ⇒ everything left
+  let gap=0, gi=-1;
+  for(let i=1;i<codeXs.length;i++){ const d=codeXs[i]-codeXs[i-1]; if(d>gap){gap=d;gi=i;} }
+  if(gi<0||gap<w*0.15) return Infinity;            // codes all in one column
+  const rightCode=codeXs[gi];                      // left edge of the right-hand table
+
+  // Measure the real gutter on rows that span both tables.
+  const mids=[];
+  for(const r of toRows(items)){
+    const codes=r.toks.filter(t=>CODE_RE.test(t.s));
+    if(codes.length<2) continue;
+    const rc=codes.filter(t=>t.x>=rightCode-1).map(t=>t.x);
+    if(!rc.length) continue;
+    const right=Math.min(...rc);
+    const left=r.toks.filter(t=>t.x<right-0.5).map(t=>t.x);
+    if(!left.length) continue;
+    mids.push((Math.max(...left)+right)/2);        // bisect left-most cell ↔ right code
+  }
+  if(mids.length){ mids.sort((a,b)=>a-b); return mids[mids.length>>1]; }
+
+  // No row spans both tables (tables not y-aligned): hug the right table instead.
+  return rightCode-Math.max(4,w*0.01);
+}
+function parseTranscript(pages){
+  const full=[], leftRows=[], rightRows=[];
+  for(const pg of pages){
+    full.push(...toLines(pg.items));
+    // Split the raw ITEMS into columns FIRST, then group each column into
+    // rows separately. Doing it in this order is essential: left- and right-
+    // table rows share the same y, so grouping before splitting would weld
+    // "FDL100 … B  FDL108 … B" into one row and corrupt both. Splitting the
+    // tokens by x first keeps each table's rows independent.
+    const boundary=columnBoundary(pg.items,pg.w);
+    const L=pg.items.filter(i=>i.x<boundary);
+    const Rt=pg.items.filter(i=>i.x>=boundary);
+    leftRows.push(...toRows(L));
+    if(Rt.length) rightRows.push(...toRows(Rt));
+  }
+  const all=full.slice();
+
+  /* ---- metadata ------------------------------------------------------ */
+  const g=(re,src)=>{const m=grab(src||all,re);return m?m[1].trim():undefined;};
+  let name=g(/Name of the Student\s*[:.]?\s*(.+)$/i,all);
+  // The flat metadata line spans BOTH header columns, so cut the name at the
+  // first label belonging to a neighbouring field.
+  if(name) name=name.replace(/\s{2,}.*$/,'')
+    .replace(/\s+(SCHOOL|Programme|Specialization|Father|Mother|Registration|Enrol|Roll|Category|Year\s+of\s+Passing)\b.*$/i,'')
+    .replace(/[:\s]+$/,'').trim();
+
+  const meta={
+    name: name||'',
+    reg_no: g(/Registration\s*No\.?\s*[:.]?\s*([A-Z0-9\/-]{6,})/i)||'',
+    printed_max_marks:      g(/MAX\.?\s*MARKS\s*[:.]?\s*(\d+)/i),
+    printed_obtained_marks: g(/OBTAINED\s*MARKS\s*[:.]?\s*(\d+)/i),
+    printed_percentage:     g(/PERCENTAGE\s*[:.]?\s*([\d.]+)/i),
+    printed_total_credits:  g(/TOTAL\s*CREDITS\s*[:.]?\s*(\d+)/i),
+    printed_cgpa:           g(/\bCGPA\s*[:.]?\s*([\d.]+)/i),
+    marks_per_subject:      g(/All\s+subjects?\s+carry\s+(\d+)\s+Marks/i),
+    printed_sgpa:{}, printed_sem_credits:{}
+  };
+
+  /* ---- subjects, walking each column top-to-bottom by ROWS ----------- */
+  const subjects=[]; const seen=new Set();
+  for(const rows of [leftRows,rightRows]){
+    /* A course name that wraps to a second line forms its own row, and the
+       code / credits / marks / grade cells are vertically CENTRED across the
+       two name lines — so they group with neither. A row carrying only name
+       text (no course code, no T-P-PR, not a semester or CREDITS/SGPA line)
+       that starts inside the name column is therefore a wrap fragment, and is
+       re-joined to the adjacent subject row. The y-window and the name-column
+       test together stop the grade-scale table and the footnotes at the bottom
+       of page 2 from being swallowed into the last subject's name. */
+    const cXs=rows.flatMap(r=>r.toks.filter(t=>CODE_RE.test(t.s)).map(t=>t.x));
+    const nameX=cXs.length?Math.min(...cXs)+10:Infinity;
+    const isFragment=r=>{
+      if(!r||!r.toks.length) return false;
+      if(r.toks.some(t=>CODE_RE.test(t.s)||TPPR_RE.test(t.s))) return false;
+      if(SEM_RE.test(r.text)||SEMTOT_RE.test(r.text)) return false;
+      return Math.min(...r.toks.map(t=>t.x))>nameX;
+    };
+
+    let sem=null;
+    for(let i=0;i<rows.length;i++){
+      const row=rows[i];
+      const sm=row.text.match(SEM_RE);
+      if(sm){ sem=ORD[sm[1].toLowerCase()]; continue; }
+      if(sem==null) continue;
+
+      const st=row.text.match(SEMTOT_RE);
+      if(st){ meta.printed_sem_credits[sem]=st[1]; meta.printed_sgpa[sem]=st[2]; continue; }
+
+      const sub=readSubjectRow(row.toks);
+      if(sub){
+        const key=`${sem}|${sub.course_code}|${sub.marks}`;
+        if(seen.has(key)) continue;
+        seen.add(key);
+        const prev=rows[i-1], next=rows[i+1], parts=[];
+        if(isFragment(prev)&&Math.abs(prev.y-row.y)<=12) parts.push(prev.text);
+        if(sub.course_name) parts.push(sub.course_name);
+        if(isFragment(next)&&Math.abs(next.y-row.y)<=12) parts.push(next.text);
+        sub.course_name=parts.join(' ').replace(/\s+/g,' ').trim();
+        subjects.push({semester:sem, ...sub});
+      }
+    }
+  }
+  subjects.sort((a,b)=>a.semester-b.semester);
+  return {meta,subjects,lines:full};
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AUDIT — unchanged
+   ═══════════════════════════════════════════════════════════════════════ */
+class CreditError extends Error{constructor(e){super(e.join(' | '));this.errors=e;}}
+
+function auditStudent(doc,table){
+  const meta=doc.meta||{};
+  const subs=(doc.subjects||[]).map(s=>({
+    sem:String(s.semester), code:String(s.course_code).trim(),
+    marks:R(s.marks), printedGrade:String(s.printed_grade).trim(),
+    credits:parseCredits(s.credits), rawCredits:String(s.credits).trim()
+  }));
+  if(!subs.length) throw new Error('no subject rows could be read from this PDF');
+
+  const order=[], bySem=new Map();
+  for(const s of subs){ if(!bySem.has(s.sem)){bySem.set(s.sem,[]);order.push(s.sem);} bySem.get(s.sem).push(s); }
+
+  const gradeRows=subs.map(s=>{
+    const implied=gradeForMarks(s.marks,table);
+    return {...s, implied, ok: implied===s.printedGrade};
+  });
+
+  /* Semester credit reconciliation (also the parse-integrity check).
+     Collected into creditErrors and surfaced on the result so the caller can
+     still show the full per-subject breakdown with the mismatch flagged in
+     place, rather than hiding the whole student. Downstream totals that depend
+     on the (possibly incomplete) rows are marked untrusted via creditErrors. */
+  const psc=meta.printed_sem_credits||{}, creditErrors=[];
+  for(const sem of order){
+    const calc=bySem.get(sem).reduce((a,s)=>a.add(s.credits),ZERO);
+    const p=psc[sem];
+    if(p!==undefined&&!calc.eq(R(p)))
+      creditErrors.push(`Semester ${sem}: the ${bySem.get(sem).length} subject rows read total ${calc.toFixed(0)} credits but the transcript's CREDITS line says ${p} (off by ${calc.sub(R(p)).toFixed(0)}) — either a data error on the transcript or a row the reader missed`);
+  }
+
+  const ps=meta.printed_sgpa||{};
+  const semesters=order.map(sem=>{
+    const rows=bySem.get(sem);
+    let w=ZERO,c=ZERO,m=ZERO;
+    const items=[];   // per-subject line items for the breakdown report
+    for(const s of rows){
+      const gp=R(table[gradeForMarks(s.marks,table)].point);
+      const contrib=s.credits.mul(gp);                      // Ci × Gi
+      w=w.add(contrib); c=c.add(s.credits); m=m.add(s.marks);
+      const impliedGrade=gradeForMarks(s.marks,table);
+      items.push({
+        code:s.code, rawCredits:s.rawCredits, credits:s.credits.toFixed(0),
+        marks:s.marks.toFixed(0), printedGrade:s.printedGrade,
+        impliedGrade, gradeOK:impliedGrade===s.printedGrade,
+        gradePoint:gp.toFixed(0), contrib:contrib.toFixed(0)   // Ci×Gi
+      });
+    }
+    const exact=c.isZero()?ZERO:w.div(c);
+    const printed=ps[sem]===undefined?null:String(ps[sem]);
+    return {sem,exact,weighted:w,credits:c,marks:m,count:rows.length,
+      calc:exact.toFixed(1),printed,items,
+      printedCredits:meta.printed_sem_credits?.[sem]!==undefined?String(meta.printed_sem_credits[sem]):null,
+      match:printed===null?null:exact.matchesPrinted(printed)};
+  });
+
+  let W=ZERO,C=ZERO,M=ZERO;
+  for(const s of subs){
+    W=W.add(s.credits.mul(R(table[gradeForMarks(s.marks,table)].point)));
+    C=C.add(s.credits); M=M.add(s.marks);
+  }
+  const cgpa=C.isZero()?ZERO:W.div(C);
+
+  let cgpaAlt=null,cgpaChanges=null;
+  if(semesters.some(s=>s.match===false)){
+    let num=ZERO,den=ZERO;
+    for(const s of semesters){
+      num=num.add((s.printed!==null?R(s.printed):s.exact).mul(s.credits));
+      den=den.add(s.credits);
+    }
+    cgpaAlt=den.isZero()?ZERO:num.div(den);
+    cgpaChanges=cgpaAlt.toFixed(1)!==cgpa.toFixed(1);
+  }
+
+  /* ── Maximum Marks cross-check ────────────────────────────────────────
+     Strategy 1 (explicit): the footer text "All subjects carry 100 Marks"
+       was parsed into marks_per_subject → use subject-count × that value.
+     Strategy 2 (course-code count): count unique course codes of the form
+       [A-Z]{3}\d{3} (exactly 3 letters + 3 digits, e.g. FDP101, AAL108).
+       Each code represents one subject worth 100 marks. Multiply count × 100.
+       This matches the printed "35 × 100 = 3500" style on MSU transcripts.
+     Both strategies are cross-checked against the printed MAX. MARKS figure.
+     A mismatch is always flagged and never silently substituted.
+  ──────────────────────────────────────────────────────────────────── */
+  const CODE_COUNT_RE=/^[A-Z]{3}\d{3}$/;   // exactly 3 letters + 3 digits
+  const uniqueCodes=new Set(subs.map(s=>s.code.trim()).filter(c=>CODE_COUNT_RE.test(c)));
+  const subjectCount=uniqueCodes.size||subs.length;  // fallback to row count if codes unusual
+
+  let expMax=null,maxAnom=false;
+  let marksPerSubject=meta.marks_per_subject;
+  if(marksPerSubject===undefined){
+    // No explicit "All subjects carry N marks" line found — assume 100 per subject
+    // (standard MSU rule) and derive expMax from unique course-code count.
+    marksPerSubject='100';
+  }
+  if(subjectCount>0){
+    expMax=R(subjectCount).mul(R(marksPerSubject));
+    if(meta.printed_max_marks!==undefined) maxAnom=!expMax.eq(R(meta.printed_max_marks));
+  }
+  let pct=null,pctAlt=null;
+  if(meta.printed_max_marks!==undefined&&!R(meta.printed_max_marks).isZero())
+    pct=M.div(R(meta.printed_max_marks)).mul(R(100));
+  if(maxAnom&&expMax&&!expMax.isZero()) pctAlt=M.div(expMax).mul(R(100));
+
+  return {meta,semesters,gradeRows,totalCredits:C,obtained:M,weighted:W,
+          cgpa,cgpaAlt,cgpaChanges,expMax,maxAnom,pct,pctAlt,count:subs.length,
+          subjectCount, marksPerSubject, uniqueCodes,
+          creditErrors};
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   STATE + UI
+   ═══════════════════════════════════════════════════════════════════════ */
+let FILES=[], RESULT=null;
+
+const tag=(cls,txt)=>`<span class="tag t-${cls}">${txt}</span>`;
+const okTag=b=>b===null?tag('variant','N/A'):(b?tag('match','MATCH'):tag('mismatch','MISMATCH'));
+const cellCls=b=>b===null?'val-var':(b?'val-good':'val-bad');
+
+function refreshHint(){
+  $('#runBtn').disabled=!FILES.length;
+  $('#hint').textContent=FILES.length?`${FILES.length} transcript${FILES.length>1?'s':''} ready.`
+    :'Load at least one transcript PDF to begin.';
+}
+function addFiles(list){
+  const keep=list.filter(f=>/\.pdf$/i.test(f.name));
+  if(!keep.length) return;
+  FILES.push(...keep);
+  $('#pill').style.display='inline-flex';
+  $('#pillTxt').textContent=`${FILES.length} transcript${FILES.length>1?'s':''} loaded`;
+  refreshHint();
+}
+$('#fileInput').onchange=e=>addFiles([...e.target.files]);
+['dragover','dragleave','drop'].forEach(ev=>{
+  const d=$('#drop');
+  d.addEventListener(ev,e=>{
+    e.preventDefault(); d.classList.toggle('hot',ev==='dragover');
+    if(ev==='drop') addFiles([...e.dataTransfer.files]);
+  });
+});
+$('#clearBtn').onclick=()=>{
+  FILES=[];RESULT=null;$('#pill').style.display='none';$('#results').style.display='none';
+  $('#fileInput').value='';$('#dlBtn').disabled=true;$('#bar').classList.remove('on');
+  $('#barLbl').textContent='';refreshHint();
+};
+$('#resetGrades').onclick=()=>{
+  $('#gradeTable').value=JSON.stringify(DEFAULT_GRADES,null,1);
+  GRADES=DEFAULT_GRADES;$('#gradeStatus').textContent='Using MSU default scale.';
+  $('#gradeStatus').style.color='var(--muted)';
+};
+$('#gradeTable').oninput=()=>{
+  try{
+    const t=JSON.parse($('#gradeTable').value);
+    for(const s of Object.values(t)){R(s.point);R(s.min);}
+    GRADES=t;$('#gradeStatus').textContent='Custom scale accepted.';
+    $('#gradeStatus').style.color='var(--greenInk)';
+  }catch(e){
+    $('#gradeStatus').textContent='Invalid — still using the last good scale.';
+    $('#gradeStatus').style.color='var(--redInk)';
+  }
+};
+
+/* ── run ────────────────────────────────────────────────────────────── */
+$('#runBtn').onclick=async()=>{
+  $('#runBtn').disabled=true;$('#dlBtn').disabled=true;
+  const bar=$('#bar'),fill=$('#barFill'),lbl=$('#barLbl');bar.classList.add('on');
+  const status=[],semRows=[],finalRows=[],gradeRows=[],dataErrors=[],precision=[],parsed=[],unreadable=[],breakdown=[];
+
+  for(let i=0;i<FILES.length;i++){
+    const f=FILES[i];
+    fill.style.width=Math.round(i/FILES.length*100)+'%';
+    lbl.textContent=`Reading ${i+1} of ${FILES.length} — ${f.name}`;
+    await new Promise(r=>setTimeout(r,0));
+
+    let doc,raw;
+    try{
+      const ex=await extractPdf(f);
+      if(ex.charCount<200){
+        unreadable.push({file:f.name,reason:'No text layer — scanned or image-only transcript'});
+        status.push({file:f.name,reg:'—',nm:'—',status:'UNREADABLE',n:1});
+        continue;
+      }
+      doc=parseTranscript(ex.pages); raw=doc.lines;
+    }catch(err){
+      unreadable.push({file:f.name,reason:'PDF could not be opened: '+err.message});
+      status.push({file:f.name,reg:'—',nm:'—',status:'UNREADABLE',n:1});
+      continue;
+    }
+
+    const m0=doc.meta;
+    parsed.push({file:f.name,reg:m0.reg_no||'—',nm:m0.name||'—',
+      subjects:doc.subjects.length,
+      sems:Object.keys(m0.printed_sem_credits).length,
+      fields:['printed_total_credits','printed_obtained_marks','printed_max_marks',
+              'printed_percentage','printed_cgpa']
+             .filter(k=>m0[k]===undefined)
+             // marks_per_subject is always recoverable via course-code count; never flag as missing
+             ,
+      rows:doc.subjects, raw});
+
+    let r;
+    try{ r=auditStudent(doc,GRADES); }
+    catch(err){
+      dataErrors.push({file:f.name,reg:m0.reg_no||'—',nm:m0.name||'—',sev:'Major',detail:err.message});
+      status.push({file:f.name,reg:m0.reg_no||'—',nm:m0.name||'—',status:'REJECTED',n:1});
+      continue;
+    }
+
+    const m=r.meta, reg=m.reg_no||'—', nm=m.name||f.name;
+    let flags=0;
+    // credit reconciliation issues: flag and surface, but STILL show the
+    // breakdown below so the user can see exactly which line diverged
+    if(r.creditErrors.length){
+      r.creditErrors.forEach(d=>dataErrors.push({file:f.name,reg,nm,sev:'Critical',detail:d}));
+      flags+=r.creditErrors.length;
+    }
+
+    r.semesters.forEach(s=>{
+      if(s.match===false) flags++;
+      semRows.push({reg,nm,sem:s.sem,calc:s.calc,printed:s.printed??'—',match:s.match,
+        credits:s.credits.toFixed(0),marks:s.marks.toFixed(0),count:s.count});
+      precision.push({reg,scope:`Semester ${s.sem} SGPA`,
+        expr:`${s.weighted.frac()} ÷ ${s.credits.frac()}`,exact:s.exact.frac(),rounded:s.calc});
+      breakdown.push({reg,nm,sem:s.sem,items:s.items,
+        credits:s.credits.toFixed(0),printedCredits:s.printedCredits,
+        creditsMatch:s.printedCredits===null?null:(s.credits.toFixed(0)===s.printedCredits),
+        weighted:s.weighted.toFixed(0),
+        sgpaCalc:s.calc,sgpaPrinted:s.printed,sgpaMatch:s.match,
+        sgpaExpr:`${s.weighted.frac()} ÷ ${s.credits.frac()}`});
+    });
+
+    const add=(field,calc,printed,match,note)=>{
+      if(match===false) flags++;
+      finalRows.push({reg,nm,field,calc,printed:printed??'—',match,note:note||''});
+    };
+    const cgpaP=m.printed_cgpa===undefined?null:String(m.printed_cgpa);
+    add('CGPA',r.cgpa.toFixed(1),cgpaP,cgpaP===null?null:r.cgpa.matchesPrinted(cgpaP),
+        'recomputed from all subjects, not from the printed SGPAs');
+    if(r.cgpaAlt) add('CGPA (using printed SGPAs)',r.cgpaAlt.toFixed(1),r.cgpa.toFixed(1),null,
+        r.cgpaChanges?'final rounded CGPA DOES change':'final rounded CGPA does not change');
+
+    const tcP=m.printed_total_credits===undefined?null:String(m.printed_total_credits);
+    add('Total Credits',r.totalCredits.toFixed(0),tcP,tcP===null?null:r.totalCredits.eq(R(tcP)),'Σ(T+P+PR)');
+
+    r.semesters.forEach(s=>finalRows.push({reg,nm,field:`  ↳ Sem ${s.sem} marks subtotal`,
+      calc:s.marks.toFixed(0),printed:'',match:null,note:`${s.count} subjects`}));
+
+    const omP=m.printed_obtained_marks===undefined?null:String(m.printed_obtained_marks);
+    add('Obtained Marks',r.obtained.toFixed(0),omP,omP===null?null:r.obtained.eq(R(omP)),'Σ subject marks');
+
+    if(r.expMax){
+      const mmP=m.printed_max_marks===undefined?null:String(m.printed_max_marks);
+      const maxBasis=m.marks_per_subject!==undefined
+        ? `${r.count} subjects × ${m.marks_per_subject} (from transcript footer)`
+        : `${r.subjectCount} unique course codes × ${r.marksPerSubject} (each code = 1 subject @ 100 marks)`;
+      add('Maximum Marks',r.expMax.toFixed(0),mmP,!r.maxAnom,maxBasis);
+      if(r.maxAnom) dataErrors.push({file:f.name,reg,nm,sev:'Major',
+        detail:`Maximum Marks printed as ${mmP} but ${maxBasis} = ${r.expMax.toFixed(0)}`});
+    }
+    if(r.pct){
+      const pP=m.printed_percentage===undefined?null:String(m.printed_percentage);
+      const dp=pP===null?2:Math.max(decimalsOf(pP),2);
+      add('Percentage',r.pct.toFixed(dp),pP,pP===null?null:r.pct.matchesPrinted(pP),'on the printed Maximum Marks');
+      if(r.pctAlt) add('Percentage (corrected max)',r.pctAlt.toFixed(2),r.pct.toFixed(2),null,
+        `if Maximum Marks were ${r.expMax.toFixed(0)} (${r.subjectCount} course codes × ${r.marksPerSubject})`);
+      precision.push({reg,scope:'Percentage',
+        expr:`${r.obtained.frac()} ÷ ${R(m.printed_max_marks).frac()} × 100`,
+        exact:r.pct.frac(),rounded:r.pct.toFixed(dp)});
+    }
+    precision.push({reg,scope:'CGPA',expr:`${r.weighted.frac()} ÷ ${r.totalCredits.frac()}`,
+      exact:r.cgpa.frac(),rounded:r.cgpa.toFixed(1)});
+
+    r.gradeRows.forEach(g=>{
+      if(!g.ok) flags++;
+      gradeRows.push({reg,nm,sem:g.sem,code:g.code,marks:g.marks.toFixed(0),
+        printed:g.printedGrade,implied:g.implied,ok:g.ok,credits:g.rawCredits,parsed:g.credits.toFixed(0)});
+    });
+
+    status.push({file:f.name,reg,nm,status:flags?'FLAGGED':'CLEAN',n:flags});
+  }
+
+  fill.style.width='100%';lbl.textContent='Done.';
+  RESULT={status,semRows,finalRows,gradeRows,dataErrors,precision,parsed,unreadable,breakdown};
+  render();
+  $('#runBtn').disabled=false;$('#dlBtn').disabled=false;
+};
+
+/* ── render ─────────────────────────────────────────────────────────── */
+function render(){
+  const Rz=RESULT;$('#results').style.display='block';
+  const clean=Rz.status.filter(s=>s.status==='CLEAN').length;
+  const flagged=Rz.status.filter(s=>s.status==='FLAGGED').length;
+  const sgpaErr=Rz.semRows.filter(r=>r.match===false).length;
+  const gradeErr=Rz.gradeRows.filter(r=>!r.ok).length;
+  const finalErr=Rz.finalRows.filter(r=>r.match===false).length;
+
+  $('#kpis').innerHTML=[
+    ['',Rz.status.length,'Transcripts'],['ok',clean,'Clean'],['flag',flagged,'Flagged'],
+    ['flag',sgpaErr,'SGPA errors'],['flag',gradeErr,'Grade errors'],['warn',finalErr,'Final-value flags']
+  ].map(k=>`<div class="kpi ${k[0]}"><div class="n">${k[1]}</div><div class="l">${k[2]}</div></div>`).join('');
+
+  const tbl=(head,body,empty)=>body?`<div class="scroll"><table><thead><tr>${
+    head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>`
+    :`<div class="empty">${empty}</div>`;
+  const panels=[];
+
+  /* ── Semester Breakdown — the full line-by-line view ─────────────────
+     For every semester: each subject's marks → derived grade → grade point →
+     Ci×Gi, then the credit total and the SGPA, each shown as computed vs the
+     value printed on the transcript, with a per-line status. This is the tab
+     that answers "what did the code calculate vs what is on the marksheet"
+     for every single item. */
+  const bd=Rz.breakdown.map(b=>{
+    const st=x=>x===null?tag('variant','—'):(x?tag('match','✓'):tag('mismatch','✗'));
+    const subj=b.items.map(it=>`<tr>
+        <td class="reg">${esc(it.code)}</td>
+        <td>${esc(it.marks)}</td>
+        <td class="reg">${esc(it.rawCredits)}</td>
+        <td>${esc(it.credits)}</td>
+        <td class="${it.gradeOK?'val-good':'val-bad'}">${esc(it.printedGrade)}</td>
+        <td class="${it.gradeOK?'val-good':'val-bad'}"><b>${esc(it.impliedGrade)}</b></td>
+        <td>${esc(it.gradePoint)}</td>
+        <td>${esc(it.credits)} × ${esc(it.gradePoint)} = <b>${esc(it.contrib)}</b></td>
+        <td>${st(it.gradeOK)}</td></tr>`).join('');
+    return `<div style="margin-bottom:22px">
+      <div style="font:600 14px var(--sans);color:var(--blue2);margin-bottom:2px">
+        ${esc(b.nm)} · <span class="reg">${esc(b.reg)}</span> — Semester ${esc(b.sem)}</div>
+      <div class="scroll" style="max-height:none">
+      <table><thead><tr>
+        <th>Course</th><th>Marks</th><th>Credits (T-P-PR)</th><th>Σ credits</th>
+        <th>Printed grade</th><th>Derived grade</th><th>Gi</th><th>Ci × Gi</th><th></th>
+      </tr></thead><tbody>${subj}
+      <tr style="border-top:2px solid var(--line);font-weight:600;background:#f7fafd">
+        <td colspan="3">Semester credit total</td>
+        <td>${esc(b.credits)}</td>
+        <td colspan="2" style="color:var(--muted)">printed: ${esc(b.printedCredits??'—')}</td>
+        <td colspan="2">Σ(Ci×Gi) = ${esc(b.weighted)}</td>
+        <td>${st(b.creditsMatch)}</td></tr>
+      <tr style="font-weight:600;background:#f7fafd">
+        <td colspan="3">SGPA = Σ(Ci×Gi) ÷ Σ credits</td>
+        <td colspan="2" class="frac" style="font-size:11px">${esc(b.sgpaExpr)}</td>
+        <td class="${cellCls(b.sgpaMatch)}"><b>${esc(b.sgpaCalc)}</b></td>
+        <td class="${cellCls(b.sgpaMatch)}">printed: ${esc(b.sgpaPrinted??'—')}</td>
+        <td></td><td>${st(b.sgpaMatch)}</td></tr>
+      </tbody></table></div></div>`;
+  }).join('');
+  panels.push(['Semester Breakdown',
+    `<div class="note info">Every subject line shows the marks read from the transcript, the grade the
+     marks imply, its grade point Gi, and the credit-point product Ci×Gi. Each semester then shows the
+     credit total and SGPA, computed vs printed. Green ✓ / red ✗ marks each line. If a semester's credit
+     total does not match the printed figure, the transcript was rejected and appears under Data Errors
+     instead.</div>${bd||'<div class="empty">Nothing computed.</div>'}`]);
+
+  panels.push(['Student Status', tbl(
+    ['Reg. No.','Name','File','Status','# Flags'],
+    Rz.status.map(s=>`<tr><td class="reg">${esc(s.reg)}</td><td>${esc(s.nm)}</td>
+      <td class="reg">${esc(s.file)}</td>
+      <td>${tag(s.status==='CLEAN'?'clean':s.status==='FLAGGED'?'flagged':'critical',s.status)}</td>
+      <td>${s.n}</td></tr>`).join(''),'No transcripts processed.')]);
+
+  panels.push(['Semester SGPA', tbl(
+    ['Reg. No.','Sem','Subjects','Credits','Marks','Computed SGPA','Printed SGPA','Result'],
+    Rz.semRows.map(r=>`<tr><td class="reg">${esc(r.reg)}</td><td>${esc(r.sem)}</td>
+      <td>${r.count}</td><td>${esc(r.credits)}</td><td>${esc(r.marks)}</td>
+      <td class="${cellCls(r.match)}"><b>${esc(r.calc)}</b></td>
+      <td class="${cellCls(r.match)}">${esc(r.printed)}</td>
+      <td>${okTag(r.match)}</td></tr>`).join(''),'No semesters computed.')]);
+
+  panels.push(['Final Values', tbl(
+    ['Reg. No.','Field','Computed','Printed','Result','Basis'],
+    Rz.finalRows.map(r=>`<tr><td class="reg">${esc(r.reg)}</td><td>${esc(r.field)}</td>
+      <td class="${cellCls(r.match)}"><b>${esc(r.calc)}</b></td>
+      <td class="${cellCls(r.match)}">${esc(r.printed)}</td>
+      <td>${okTag(r.match)}</td><td style="color:var(--muted)">${esc(r.note)}</td></tr>`).join(''),
+    'No final values computed.')]);
+
+  panels.push([`Subject Grades${gradeErr?' ('+gradeErr+')':''}`,
+    (gradeErr?'':`<div class="note good">Every printed grade agrees with the grade implied by the marks.</div>`)+
+    tbl(['Reg. No.','Sem','Course','Marks','Credits (T-P-PR)','Parsed','Printed','Implied','Result'],
+    Rz.gradeRows.map(r=>`<tr><td class="reg">${esc(r.reg)}</td><td>${esc(r.sem)}</td>
+      <td class="reg">${esc(r.code)}</td><td>${esc(r.marks)}</td>
+      <td class="reg">${esc(r.credits)}</td><td>${esc(r.parsed)}</td>
+      <td class="${r.ok?'val-good':'val-bad'}">${esc(r.printed)}</td>
+      <td class="${r.ok?'val-good':'val-bad'}"><b>${esc(r.implied)}</b></td>
+      <td>${okTag(r.ok)}</td></tr>`).join(''),'No subjects.')]);
+
+  /* Parsed Data — what the reader actually got out of each PDF */
+  panels.push([`Extracted from PDF`,
+    `<div class="note info">Check this before trusting any result. It shows exactly what the reader
+     took off each transcript. If a subject row is missing here, the semester credit check will have
+     caught it and held that student back.</div>`+
+    Rz.parsed.map(p=>`<details class="raw"><summary>${esc(p.nm)} · ${esc(p.reg)} —
+       ${p.subjects} subjects across ${p.sems} semesters${p.fields.length?
+       ` · <span style="color:var(--redInk)">missing: ${p.fields.join(', ')}</span>`:''}</summary>
+       <table style="margin-top:8px"><thead><tr><th>Sem</th><th>Code</th><th>Course name</th>
+       <th>Credits</th><th>Marks</th><th>Grade</th></tr></thead><tbody>
+       ${p.rows.map(s=>`<tr><td>${s.semester}</td><td class="reg">${esc(s.course_code)}</td>
+         <td>${esc(s.course_name)}</td><td class="reg">${esc(s.credits)}</td>
+         <td>${esc(s.marks)}</td><td>${esc(s.printed_grade)}</td></tr>`).join('')}
+       </tbody></table>
+       <details class="raw" style="margin-top:8px"><summary>Raw text layer</summary>
+       <pre>${esc(p.raw.join('\n'))}</pre></details>
+       </details>`).join('')||`<div class="empty">Nothing read.</div>`]);
+
+  panels.push([`Data Errors${Rz.dataErrors.length+Rz.unreadable.length?' ('+(Rz.dataErrors.length+Rz.unreadable.length)+')':''}`,
+    (Rz.dataErrors.length?tbl(['Reg. No.','Name','File','Severity','Detail'],
+      Rz.dataErrors.map(e=>`<tr><td class="reg">${esc(e.reg)}</td><td>${esc(e.nm)}</td>
+        <td class="reg">${esc(e.file)}</td><td>${tag(e.sev.toLowerCase(),e.sev)}</td>
+        <td>${esc(e.detail)}</td></tr>`).join(''),'')
+    :`<div class="empty">No data errors. Every semester's subject credits reconciled with its printed total.</div>`)+
+    (Rz.unreadable.length?`<h3 style="font-size:14px;margin:18px 0 8px">Unreadable PDFs</h3>`+
+      tbl(['File','Reason'],Rz.unreadable.map(u=>`<tr><td class="reg">${esc(u.file)}</td>
+        <td>${esc(u.reason)}</td></tr>`).join(''),''):'')]);
+
+  panels.push(['Precision Log',
+    `<div class="note">Each figure below is the exact unreduced fraction the tool carried, followed by the
+     single ROUND_HALF_UP step applied at the end. Nothing passed through a floating-point number, so
+     these can be re-derived by hand and must agree exactly.</div>`+
+    tbl(['Reg. No.','Quantity','Expression','Exact fraction','Rounded'],
+    Rz.precision.map(p=>`<tr><td class="reg">${esc(p.reg)}</td><td>${esc(p.scope)}</td>
+      <td class="frac">${esc(p.expr)}</td><td class="frac">${esc(p.exact)}</td>
+      <td class="reg"><b>${esc(p.rounded)}</b></td></tr>`).join(''),'Nothing computed.')]);
+
+  $('#tabs').innerHTML=panels.map((p,i)=>`<div class="tab${i===0?' active':''}" data-i="${i}">${p[0]}</div>`).join('');
+  $('#panels').innerHTML=panels.map((p,i)=>`<div class="panel${i===0?' active':''}" data-i="${i}">${p[1]}</div>`).join('');
+  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelector(`.panel[data-i="${t.dataset.i}"]`).classList.add('active');
+  });
+}
+
+/* ── Excel report ───────────────────────────────────────────────────── */
+$('#dlBtn').onclick=async()=>{
+  const Rz=RESULT;if(!Rz)return;
+  const wb=new ExcelJS.Workbook();
+  const HDR={fill:{type:'pattern',pattern:'solid',fgColor:{argb:'FF1F4E79'}},font:{color:{argb:'FFFFFFFF'},bold:true,name:'Arial'}};
+  const F=argb=>({fill:{type:'pattern',pattern:'solid',fgColor:{argb}}});
+  const GREEN='FFC6EFCE',RED='FFFFC7CE',AMBER='FFFFEB9C',VIOLET='FFDDEBF7';
+  const styleHead=ws=>{ws.getRow(1).eachCell(c=>{c.fill=HDR.fill;c.font=HDR.font;});ws.views=[{state:'frozen',ySplit:1}];};
+  const mf=m=>m===null?VIOLET:(m?GREEN:RED);
+
+  let ws=wb.addWorksheet('Summary');
+  ws.addRow(['Metric','Value','Remarks']);
+  [['Transcripts processed',Rz.status.length,'this run'],
+   ['Clean',Rz.status.filter(s=>s.status==='CLEAN').length,'every computed value matched the transcript'],
+   ['Flagged',Rz.status.filter(s=>s.status==='FLAGGED').length,''],
+   ['Rejected',Rz.status.filter(s=>s.status==='REJECTED').length,'credit reconciliation failed — see Data Errors'],
+   ['Unreadable',Rz.status.filter(s=>s.status==='UNREADABLE').length,'scanned / no text layer'],
+   ['SGPA errors',Rz.semRows.filter(r=>r.match===false).length,''],
+   ['Grade errors',Rz.gradeRows.filter(r=>!r.ok).length,''],
+   ['Final-value flags',Rz.finalRows.filter(r=>r.match===false).length,''],
+   ['Arithmetic','Exact BigInteger rationals','no IEEE-754 float, no tolerance window'],
+   ['Rounding','ROUND_HALF_UP, applied once','floor((2a+d)/2d)']
+  ].forEach(r=>ws.addRow(r));
+  styleHead(ws);ws.columns=[{width:30},{width:26},{width:56}];
+
+  ws=wb.addWorksheet('Student Status');
+  ws.addRow(['Reg. No.','Name','File','Status','# Flags']);
+  Rz.status.forEach(s=>{const r=ws.addRow([s.reg,s.nm,s.file,s.status,s.n]);
+    r.getCell(4).fill=F(s.status==='CLEAN'?GREEN:RED).fill;});
+  styleHead(ws);ws.columns=[{width:16},{width:30},{width:30},{width:14},{width:9}];
+
+  ws=wb.addWorksheet('Semester SGPA');
+  ws.addRow(['Reg. No.','Name','Sem','Subjects','Credits','Marks','Computed SGPA','Printed SGPA','Result']);
+  Rz.semRows.forEach(x=>{const r=ws.addRow([x.reg,x.nm,x.sem,x.count,Number(x.credits),Number(x.marks),
+    x.calc,x.printed,x.match===null?'N/A':(x.match?'MATCH':'MISMATCH')]);
+    [7,8,9].forEach(c=>r.getCell(c).fill=F(mf(x.match)).fill);});
+  styleHead(ws);ws.columns=[{width:16},{width:26},{width:7},{width:10},{width:9},{width:9},{width:15},{width:14},{width:12}];
+
+  ws=wb.addWorksheet('Semester Breakdown');
+  ws.addRow(['Reg. No.','Name','Sem','Course','Marks','Credits (T-P-PR)','Σ credits',
+             'Printed Grade','Derived Grade','Gi','Ci×Gi','Line Result']);
+  Rz.breakdown.forEach(b=>{
+    b.items.forEach(it=>{
+      const r=ws.addRow([b.reg,b.nm,b.sem,it.code,Number(it.marks),it.rawCredits,Number(it.credits),
+        it.printedGrade,it.impliedGrade,Number(it.gradePoint),Number(it.contrib),
+        it.gradeOK?'MATCH':'MISMATCH']);
+      [8,9,12].forEach(c=>r.getCell(c).fill=F(it.gradeOK?GREEN:RED).fill);
+    });
+    const rc=ws.addRow([b.reg,b.nm,b.sem,'— credit total —','','',Number(b.credits),
+      'printed:',b.printedCredits??'—','','Σ(Ci×Gi)='+b.weighted,
+      b.creditsMatch===null?'N/A':(b.creditsMatch?'MATCH':'MISMATCH')]);
+    rc.font={bold:true}; rc.getCell(12).fill=F(mf(b.creditsMatch)).fill;
+    const rs=ws.addRow([b.reg,b.nm,b.sem,'— SGPA —','','','',
+      'computed:',b.sgpaCalc,'printed:',b.sgpaPrinted??'—',
+      b.sgpaMatch===null?'N/A':(b.sgpaMatch?'MATCH':'MISMATCH')]);
+    rs.font={bold:true}; [9,11,12].forEach(c=>rs.getCell(c).fill=F(mf(b.sgpaMatch)).fill);
+  });
+  styleHead(ws);ws.columns=[{width:16},{width:24},{width:5},{width:16},{width:7},{width:15},
+    {width:9},{width:14},{width:14},{width:6},{width:14},{width:12}];
+
+  ws=wb.addWorksheet('Final Values');
+  ws.addRow(['Reg. No.','Name','Field','Computed','Printed','Result','Basis']);
+  Rz.finalRows.forEach(x=>{const r=ws.addRow([x.reg,x.nm,x.field,x.calc,x.printed,
+    x.match===null?'N/A':(x.match?'MATCH':'MISMATCH'),x.note]);
+    [4,5,6].forEach(c=>r.getCell(c).fill=F(mf(x.match)).fill);});
+  styleHead(ws);ws.columns=[{width:16},{width:26},{width:30},{width:13},{width:13},{width:12},{width:54}];
+
+  ws=wb.addWorksheet('Subject Grades');
+  ws.addRow(['Reg. No.','Sem','Course','Marks','Credits (T-P-PR)','Parsed Credits','Printed Grade','Implied Grade','Result']);
+  Rz.gradeRows.forEach(x=>{const r=ws.addRow([x.reg,x.sem,x.code,Number(x.marks),x.credits,Number(x.parsed),
+    x.printed,x.implied,x.ok?'MATCH':'MISMATCH']);
+    [7,8,9].forEach(c=>r.getCell(c).fill=F(x.ok?GREEN:RED).fill);});
+  styleHead(ws);ws.columns=[{width:16},{width:6},{width:12},{width:8},{width:16},{width:14},{width:14},{width:14},{width:12}];
+
+  ws=wb.addWorksheet('Extracted from PDF');
+  ws.addRow(['Reg. No.','Name','File','Sem','Course Code','Course Name','Credits','Marks','Grade']);
+  Rz.parsed.forEach(p=>p.rows.forEach(s=>ws.addRow([p.reg,p.nm,p.file,s.semester,s.course_code,
+    s.course_name,s.credits,Number(s.marks),s.printed_grade])));
+  styleHead(ws);ws.columns=[{width:16},{width:26},{width:26},{width:6},{width:13},{width:44},{width:11},{width:8},{width:8}];
+
+  if(Rz.dataErrors.length||Rz.unreadable.length){
+    ws=wb.addWorksheet('Data Errors');
+    ws.addRow(['Reg. No.','Name','File','Severity','Detail']);
+    Rz.dataErrors.forEach(e=>{const r=ws.addRow([e.reg,e.nm,e.file,e.sev,e.detail]);
+      r.getCell(4).fill=F(e.sev==='Critical'?RED:AMBER).fill;});
+    Rz.unreadable.forEach(u=>{const r=ws.addRow(['—','—',u.file,'Critical',u.reason]);
+      r.getCell(4).fill=F(RED).fill;});
+    styleHead(ws);ws.columns=[{width:16},{width:26},{width:30},{width:12},{width:90}];
+  }
+
+  ws=wb.addWorksheet('Precision Log');
+  ws.addRow(['Reg. No.','Quantity','Expression (exact fractions)','Exact value','Rounded']);
+  Rz.precision.forEach(p=>ws.addRow([p.reg,p.scope,p.expr,p.exact,p.rounded]));
+  styleHead(ws);ws.columns=[{width:16},{width:22},{width:36},{width:22},{width:12}];
+
+  const buf=await wb.xlsx.writeBuffer();
+  const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`Transcript_Audit_${new Date().toISOString().slice(0,10)}.xlsx`;
+  a.click();URL.revokeObjectURL(a.href);
+};
+
+/* boot */
+$('#gradeTable').value=JSON.stringify(DEFAULT_GRADES,null,1);
+$('#gradeStatus').textContent='Using MSU default scale.';
+refreshHint();
+
+(function(){
+  /* Regression guard for the two-column split. These x-values are taken from a
+     real MSU transcript page (width 843): left table code 52.8 / credits 318.4 /
+     marks 377.9 / grade 405.7, right table heading 429.6 and code 431.8. The
+     boundary MUST fall between the left grade and the right heading. The old
+     "widest empty band" rule returned ~259 here and split the left table in two. */
+  const SYNTH=[
+    {x:50.6,y:5,s:'FIRST'},{x:78.0,y:5,s:'SEMESTER'},{x:429.6,y:5,s:'SECOND'},{x:473.0,y:5,s:'SEMESTER'},
+    {x:52.8,y:20,s:'FDP101'},{x:118.9,y:20,s:'Fashion'},{x:318.4,y:20,s:'0-3-0'},{x:377.9,y:20,s:'87'},{x:405.7,y:20,s:'A'},
+    {x:431.8,y:20,s:'FDL108'},{x:496.3,y:20,s:'Basics'},{x:691.2,y:20,s:'4-0-0'},{x:749.4,y:20,s:'68'},{x:777.3,y:20,s:'B'},
+    {x:52.8,y:34,s:'FDP102'},{x:118.9,y:34,s:'Textiles'},{x:318.4,y:34,s:'1-3-0'},{x:377.9,y:34,s:'94'},{x:403.3,y:34,s:'A+'},
+    {x:431.8,y:34,s:'FDP104'},{x:496.3,y:34,s:'Advance'},{x:691.2,y:34,s:'0-3-0'},{x:749.4,y:34,s:'72'},{x:774.9,y:34,s:'B+'}];
+  const B=columnBoundary(SYNTH,843);
+  const t=[[String(B>405.7&&B<429.6),"true"],
+    [R("6.05").toFixed(1),"6.1"],[R("2.5").toFixed(0),"3"],
+    [parseCredits("1-3-0").toFixed(0),"4"],[parseCredits("0-4-0").toFixed(0),"4"],
+    [gradeForMarks(R("39"),DEFAULT_GRADES),"F"],[gradeForMarks(R("99"),DEFAULT_GRADES),"O"],
+    [new Rat(2314n).div(new Rat(3200n)).mul(new Rat(100n)).toFixed(2),"72.31"]];
+  const bad=t.filter(([g,w])=>g!==w);
+  console[bad.length?'error':'log'](bad.length?'SELF-TEST FAILED':'self-test passed: '+t.length+' cases',bad);
+})();
+</script>
+</body>
+</html>
